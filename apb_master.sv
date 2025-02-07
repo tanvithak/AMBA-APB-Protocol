@@ -24,6 +24,7 @@ module apb_master(
 
  always_comb
   begin
+   {PSEL,PENABLE} = 2'b00;
    case(cs)
     IDLE   : begin
               PSEL = 0;
