@@ -1,65 +1,39 @@
-module apb_master(
+module apb_slave(
 
- input [31:0]PRDATA,
- input PRESETn,
- input PCLK,
- input PREADY,
+ input logic PCLK,
+ input logic PRESETn,
+ input logic PSEL,
+ input logic PENABLE,
+ input logic PWRITE,
+ input logic [7:0] PADDR,
+ input logic [31:0] PWDATA,
 
- output PSEL,
- output PENABLE,
- output [7:0]PADDR,
- output PWRITE,
- output [31:0]PWDATA);
+ output logic [31:0] PRDATA,
+ output logic PREADY
+ );
 
- typedef enum logic [1:0] {IDLE,SETUP,ENABLE}state; 
- state ns,cs;
+ logic [31:0] mem [0:255];
 
  always_ff@(posedge PCLK or negedge PRESETn)
   begin
    if(!PRESETn)
-    cs <= IDLE;
+    begin
+     PRDATA <= 32'b0;
+     PREADY <= 1'b0;
+    end
    else
-    cs <= ns;
+    begin
+     if({PSEL,PENABLE} = 2'b11)
+       begin
+               PREADY <= 1'b1;
+               if(PWRITE)
+                mem[PADDR] <= PWDATA;
+               else
+                PRDATA <= mem[PADDR];
+        end
+     else
+      PREADY <= 1'b0;
+    end
   end
 
- always_comb
-  begin
-   case(cs)
-    IDLE   : begin
-              PSEL = 0;
-              PENABLE = 0;
-             end
-    SETUP  : begin
-              PSEL = 1;
-              PENABLE = 0;
-             end
-    ENABLE : begin
-              PSEL = 1;
-              PENABLE = 1;
-             end
-   endcase
-  end
-
- always_comb
-  begin
-   ns = IDLE;
-   unique case(cs)
-    IDLE   : begin
-              if(PSEL)
-               ns = SETUP;
-              else
-               ns = ENABLE;
-             end
-    SETUP  : begin
-              ns = ENABLE;
-             end
-    ENABLE : begin
-              if(PREADY)
-               ns = IDLE;
-              else
-               ns = ENABLE;
-             end    
-   endcase
-  end
-
-endmdodule
+endmodule
