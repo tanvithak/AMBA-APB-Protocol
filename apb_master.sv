@@ -1,15 +1,15 @@
 module apb_master(
 
- input [31:0]PRDATA,
- input PRESETn,
- input PCLK,
- input PREADY,
+ input logic [31:0]PRDATA,
+ input logic PRESETn,
+ input logic PCLK,
+ input logic PREADY,
 
- output PSEL,
- output PENABLE,
- output [7:0]PADDR,
- output PWRITE,
- output [31:0]PWDATA);
+ output logic PSEL,
+ output logic PENABLE,
+ output logic [7:0]PADDR,
+ output logic PWRITE,
+ output logic [31:0]PWDATA);
 
  typedef enum logic [1:0] {IDLE,SETUP,ENABLE}state; 
  state ns,cs;
