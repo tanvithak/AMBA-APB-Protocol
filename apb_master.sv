@@ -22,6 +22,8 @@ module apb_master(
     cs <= ns;
   end
 
+
+ //outputs of FSM
  always_comb
   begin
    {PSEL,PENABLE} = 2'b00;
@@ -41,6 +43,8 @@ module apb_master(
    endcase
   end
 
+
+ //NEXT STATE LOGIC
  always_comb
   begin
    ns = IDLE;
