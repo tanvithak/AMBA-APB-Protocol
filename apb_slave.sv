@@ -5,7 +5,7 @@ module apb_slave(
  input logic PSEL,
  input logic PENABLE,
  input logic PWRITE,
- input logic [7:0] PADDR,
+ input logic [31:0] PADDR,
  input logic [31:0] PWDATA,
 
  output logic [31:0] PRDATA,
