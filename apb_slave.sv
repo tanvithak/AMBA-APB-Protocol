@@ -1,4 +1,4 @@
-module apb_slave(
+module apb_design(
 
  input logic PCLK,
  input logic PRESETn,
