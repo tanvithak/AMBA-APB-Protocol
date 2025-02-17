@@ -14,26 +14,6 @@ module apb_slave(
 
  logic [31:0] mem [0:255];//256 depth memory element with 32 bit data size.
 
- always_ff@(posedge PCLK or negedge PRESETn)
-  begin
-   if(!PRESETn)
-    begin
-     PRDATA <= 32'b0;
-     PREADY <= 1'b0;
-    end
-   else
-    begin
-     if({PSEL,PENABLE} = 2'b11)
-       begin
-               PREADY <= 1'b1;
-               if(PWRITE)
-                mem[PADDR] <= PWDATA;
-               else
-                PRDATA <= mem[PADDR];
-        end
-     else
-      PREADY <= 1'b0;
-    end
-  end
+
 
 endmodule
