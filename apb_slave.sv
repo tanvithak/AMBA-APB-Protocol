@@ -12,7 +12,7 @@ module apb_slave(
  output logic PREADY
  );
 
- logic [31:0] mem [0:255];
+ logic [31:0] mem [0:255];//256 depth memory element with 32 bit data size.
 
  always_ff@(posedge PCLK or negedge PRESETn)
   begin
