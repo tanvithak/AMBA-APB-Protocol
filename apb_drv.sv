@@ -34,12 +34,12 @@ class apb_drv;
 
   task write;
     vif.DRV_MP.drv_cb.PSEL <= 1;
-    @(posedge vif.DRV_MP.clk);
+    @(posedge vif.DRV_MP.PCLK);
     vif.DRV_MP.drv_cb.PENABLE <= 0;
     vif.DRV_MP.drv_cb.PWRITE <= 1;
     vif.DRV_MP.drv_cb.PADDR <= tr.PADDR;
     vif.DRV_MP.drv_cb.PWDATA <= tr.PWDATA;
-    @(posedge vif.DRV_MP.clk);
+    @(posedge vif.DRV_MP.PCLK);
     vif.DRV_MP.drv_cb.PENABLE <= 1;
     vif.DRV_MP.drv_cb.PWRITE <= 1;
     vif.DRV_MP.drv_cb.PADDR <= tr.PADDR;
@@ -48,11 +48,11 @@ class apb_drv;
 
   task read;
     vif.DRV_MP.drv_cb.PSEL <= 1;
-    @(posedge vif.DRV_MP.clk);
+    @(posedge vif.DRV_MP.PCLK);
     vif.DRV_MP.drv_cb.PENABLE <= 0;
     vif.DRV_MP.drv_cb.PWRITE <= 0;
     vif.DRV_MP.drv_cb.PADDR <= tr.PADDR;
-    @(posedge vif.DRV_MP.clk);
+    @(posedge vif.DRV_MP.PCLK);
     vif.DRV_MP.drv_cb.PENABLE <= 1;
     vif.DRV_MP.drv_cb.PWRITE <= 0;
     vif.DRV_MP.drv_cb.PADDR <= tr.PADDR;  
@@ -60,7 +60,7 @@ class apb_drv;
   endtask
 
   task main;
-    @(posedge vif.DRV_MP.clk);
+    @(posedge vif.DRV_MP.PCLK);
     drive();
   endtask
 
