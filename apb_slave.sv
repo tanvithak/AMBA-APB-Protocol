@@ -14,7 +14,7 @@ module apb_design(
 
  logic [31:0] mem [0:255];//256 depth memory element with 32 bit data size.
 
- typedef enum logic [1:0] {IDLE,SETUP,ACCESS,ACCESS_WAIT}state; 
+ typedef enum logic [1:0] {IDLE,SETUP,ACCESS}state; 
  state ns,cs;
 
  always_ff@(posedge PCLK or negedge PRESETn)
@@ -48,7 +48,7 @@ module apb_design(
                  ns = SETUP;
                end
               else
-               ns = ACCESS_WAIT;
+               ns = ACCESS;
              end    
    endcase
   end
