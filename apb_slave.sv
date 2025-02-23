@@ -13,17 +13,30 @@ module apb_design(
  );
 
  logic [31:0] mem [0:255];//256 depth memory element with 32 bit data size.
+ logic transfer;
 
  typedef enum logic [1:0] {IDLE,SETUP,ACCESS}state; 
  state ns,cs;
-
+ 
  always_ff@(posedge PCLK or negedge PRESETn)
   begin
    if(!PRESETn)
     cs <= IDLE;
    else
-    cs <= ns;
+    begin
+     cs <= ns;
+    end
   end
+
+  always_comb 
+   begin
+    if(cs == ACCESS && PENABLE) // A valid transfer occurs when PENABLE is high during ACCESS
+      transfer = 1'b1;
+    else if(cs == IDLE && PSEL) // In IDLE state, the next state will be SETUP if PSEL is active
+      transfer = 1'b1;
+    else
+      transfer = 1'b0;
+   end
 
  //NEXT STATE LOGIC
  always_comb
@@ -31,10 +44,10 @@ module apb_design(
    ns = IDLE;
    unique case(cs)
     IDLE   : begin
-              if(PSEL)
+              if(transfer)
                ns = SETUP;
               else
-               ns = ACCESS;
+               ns = IDLE;
              end
     SETUP  : begin
               ns = ACCESS;
@@ -42,10 +55,10 @@ module apb_design(
     ACCESS : begin
               if(PREADY)
                begin
-                if(!PSEL)
-                 ns = IDLE;
-                else
+                if(transfer)
                  ns = SETUP;
+                else
+                 ns = IDLE;
                end
               else
                ns = ACCESS;
@@ -53,7 +66,8 @@ module apb_design(
    endcase
   end
 
- always_ff@(posedge CLK, negedge PRESETn)
+ //Read or write block
+ always_ff@(posedge PCLK, negedge PRESETn)
   begin
    if(!PRESETn)
     PRDATA <= 0;
@@ -66,6 +80,26 @@ module apb_design(
        else
         PRDATA <= mem[PADDR];
       end
+    end
+  end
+
+
+ //PREADY block
+ always_ff@(posedge PCLK, negedge PRESETn)
+  begin
+   if(!PRESETn)
+    PREADY <= 0;
+   else
+    begin
+     if(cs==SETUP && PWRITE)
+      PREADY <= 1'b1;
+     else if(cs == ACCESS && ~PWRITE)
+      begin
+       if( ~( $isunknown(PRDATA) ) )
+        PREADY <= 1'b1;
+      end
+     else
+      PREADY <= 1'b0;
     end
   end
 
