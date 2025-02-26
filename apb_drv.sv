@@ -1,9 +1,9 @@
 class apb_drv;
-  virtual apb_intf vif;
+  virtual apb_if vif;
   mailbox gen2drv;
   transaction tr;
 
-  function new(virtual apb_intf vif, mailbox gen2drv);
+  function new(virtual apb_if vif, mailbox gen2drv);
     this.vif = vif;
     this.gen2drv = gen2drv;
   endfunction
