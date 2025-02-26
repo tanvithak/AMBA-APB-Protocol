@@ -67,23 +67,20 @@ module apb_design(
   end
 
  //Read or write block
- always_ff@(posedge PCLK, negedge PRESETn)
+ always_comb
   begin
-   if(!PRESETn)
-    PRDATA <= 0;
-   else
-    begin
-     if(cs==ACCESS)
-      begin
-       if(PWRITE)
-         mem[PADDR] <= PWDATA;
-       else
-        PRDATA <= mem[PADDR];
-      end
-    end
+   unique case(cs)
+    IDLE   : {mem[PADDR], PRDATA} = {mem[PADDR], PRDATA};
+    SETUP  : {mem[PADDR], PRDATA} = {mem[PADDR], PRDATA};
+    ACCESS : begin
+              if(PWRITE)
+                mem[PADDR] = PWDATA;
+              else
+                PRDATA = mem[PADDR];
+             end
+   endcase
   end
-
-
+ 
  //PREADY block
  always_ff@(posedge PCLK, negedge PRESETn)
   begin
