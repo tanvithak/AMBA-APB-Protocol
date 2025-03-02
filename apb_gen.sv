@@ -1,5 +1,5 @@
 class apb_gen;
-  rand transaction tr;
+  rand apb_trans tr;
   mailbox gen2drv;
 
   function new(mailbox gen2drv);
