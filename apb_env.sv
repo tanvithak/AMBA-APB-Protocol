@@ -1,9 +1,16 @@
+`include "apb_if.sv";
+`include "apb_trans.sv";
+`include "apb_gen.sv"
+`include "apb_drv.sv"
+`include "apb_mon.sv"
+`include "apb_scoreboard.sv"
+
 class apb_env;
 
- generator gen;
- driver driv;
- monitor mon;
- scoreboard sb;
+ apb_gen gen;
+ apb_drv drv;
+ apb_mon mon;
+ apb_scoreboard sb;
 
  mailbox gen2drv;
  mailbox mon2sb;
@@ -11,7 +18,7 @@ class apb_env;
  virtual apb_if vif;
 
  function new(virtual apb_if vif);
-  this.apb_vif = apb_vif;
+  this.vif = vif;
   gen2drv = new();
   mon2sb = new();
 
