@@ -1,5 +1,7 @@
-`include "apb_if.sv";
-`include "apb_trans.sv";
+`include "apb_trans.sv"
+import apb_pkg::*;
+
+`include "apb_if.sv"
 `include "apb_gen.sv"
 `include "apb_drv.sv"
 `include "apb_mon.sv"
@@ -12,8 +14,8 @@ class apb_env;
  apb_mon mon;
  apb_scoreboard sb;
 
- mailbox gen2drv;
- mailbox mon2sb;
+ mailbox #(apb_trans) gen2drv;
+ mailbox #(apb_trans) mon2sb;
 
  virtual apb_if vif;
 
@@ -29,7 +31,7 @@ class apb_env;
  endfunction
 
  task pre_test();
-  drv_reset();
+  drv.reset();
  endtask
 
  task test();
@@ -40,7 +42,7 @@ class apb_env;
    mon.main();
   join_any
 
-  sb_main();
+  sb.main();
  endtask
 
  task run();
