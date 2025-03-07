@@ -38,5 +38,3 @@ interface apb_if(input logic PCLK, PRESETn);
   modport MON_MP(clocking mon_cb, input PCLK,PRESETn);
 
 endinterface
-    
-  
