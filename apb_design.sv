@@ -66,23 +66,6 @@ module apb_design(
    endcase
   end
 
- //Read or write block(Output Block)
- /*always_ff@(posedge PCLK, negedge PRESETn)
-  begin
-   if(!PRESETn)
-    PRDATA <= 0;
-   else
-    begin
-     if(cs==ACCESS)
-      begin
-       if(PWRITE)
-         mem[PADDR] <= PWDATA;
-       else
-        PRDATA <= mem[PADDR];
-      end
-    end
-  end*/
-
  always_comb
   begin
    unique case(cs)
