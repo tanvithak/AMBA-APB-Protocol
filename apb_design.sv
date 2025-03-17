@@ -12,7 +12,7 @@ module apb_design(
  output logic PREADY
  );
 
- logic [31:0] mem [0:2^(32)-1];//256 depth memory element with 32 bit data size.
+ logic [31:0] mem [0:2^(32)-1];//2^n depth memory element with 32 bit data size.
  logic transfer;
 
  typedef enum logic [1:0] {IDLE,SETUP,ACCESS}state; 
