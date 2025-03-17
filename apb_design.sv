@@ -72,14 +72,18 @@ module apb_design(
     IDLE   : {mem[PADDR], PRDATA} = {mem[PADDR], PRDATA};
     SETUP  : {mem[PADDR], PRDATA} = {mem[PADDR], PRDATA};
     ACCESS : begin
-              if(PWRITE)
+              if(PWRITE && PREADY)
                 mem[PADDR] = PWDATA;
-              else
+              else if(~PWRITE && PREADY)
                 PRDATA = mem[PADDR];
+              else
+               begin
+                mem[PADDR] = mem[PADDR];
+                PRDATA = PRDATA; 
+               end
              end
    endcase
   end
-
 
  //PREADY block
  always_ff@(posedge PCLK, negedge PRESETn)
@@ -88,11 +92,11 @@ module apb_design(
     PREADY <= 0;
    else
     begin
-     if(cs==SETUP && PWRITE)
+     if(cs==SETUP) //&& PWRITE)
       PREADY <= 1'b1;
      else if(cs == ACCESS && ~PWRITE)
       begin
-       if( ~( $isunknown(PRDATA) ) )
+       if( PRDATA == mem[PADDR] )
         PREADY <= 1'b1;
       end
      else
