@@ -5,7 +5,7 @@
 3. Generate PREADY signal.
 */
 
-module apb_slave(
+module apb_slave #(parameter n = 5)(
  input logic PCLK,
  input logic PRESETn,
  input logic PSEL,
@@ -17,26 +17,41 @@ module apb_slave(
  output logic PREADY,
  output logic PSLVERR);
 
- parameter n = 5;
- logic [0:(2**n)-1] mem[logic [31:0]];
+ logic [31:0] mem[0:(2**N)-1];
 
  always_ff@(posedge PCLK)
   begin
-   if(!PRESETn)
+   if (!PRESETn) 
     begin
-     PRDATA <= 0;
-     PREADY <= 0;
-    end
-   else if(PSEL && PENABLE)
+      PRDATA <= 0;
+      PREADY <= 0;
+      PSLVERR <= 0;
+    end 
+   else 
     begin
-     PREADY <= 1;
-     if(PWRITE)
-      mem[PADDR] <= PWDATA;
-     else
-      PRDATA <= mem[PADDR];
+      PREADY <= 0;
+      PSLVERR <= 0;
+
+      if (PSEL && PENABLE) 
+       begin
+        PREADY <= 1; // zero-wait state
+
+        if (PWRITE) 
+         begin
+          if (PADDR < (2**N)) // valid address check
+            mem[PADDR] <= PWDATA;
+          else
+            PSLVERR <= 1;
+         end 
+        else 
+         begin
+          if (PADDR < (2**N))
+            PRDATA <= mem[PADDR];
+          else
+            PSLVERR <= 1;
+        end
+      end
     end
-   else
-    PREADY <= 0;
   end
 
 
