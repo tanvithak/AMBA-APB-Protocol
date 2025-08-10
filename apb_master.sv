@@ -23,18 +23,6 @@ module apb_master(
 
  state cs,ns;
 
- /* logic transfer;
-
- always_comb 
-  begin
-   if(cs == ACCESS && PENABLE) // A valid transfer occurs when PENABLE is high during ACCESS
-    transfer = 1'b1;
-   else if(cs == IDLE && PSEL) // In IDLE state, the next state will be SETUP if PSEL is active
-    transfer = 1'b1;
-   else
-    transfer = 1'b0;
-  end */
-
  always_ff@(posedge PCLK)
   begin
    if(!PRESETn)
