@@ -18,6 +18,19 @@ module apb_master(
  input logic PREADY,
  input logic PSLVERR);
 
+ logic transfer;
+ always_comb 
+  begin
+   transfer = 1'b0;
+   // Ongoing transfer (in ACCESS phase)
+   if (cs == ACCESS && PENABLE)
+    transfer = 1'b1;
+
+   // New transfer request (from start signal)
+   else if (cs == IDLE && PSEL)
+    transfer = 1'b1;
+  end
+
 
  typedef enum logic [1:0] {IDLE,SETUP,ACCESS} state;
 
@@ -37,7 +50,7 @@ always_comb
   ns = IDLE;
   unique case(cs)
    IDLE   : begin
-             if(PSEL)
+            if(transfer)
               ns = SETUP;
              else
               ns = IDLE;
